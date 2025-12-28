@@ -5,6 +5,11 @@ import random
 from discord.ext import commands
 from discord import app_commands
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
+IMAGE_PATH = BASE_DIR / "images" / "tianyi.webp"
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
@@ -23,7 +28,6 @@ async def on_ready():
     )
     try:
         print(f"Logged in as {bot.user} (ID: {bot.user.id})")
-        bot.tree.clear_commands(guild=None)
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} commands.")
     except Exception as e:
@@ -41,11 +45,16 @@ async def echo(interaction: discord.Interaction, message: str):
 # /hello
 @bot.tree.command(name="hello", description="Tianyi says hello")
 async def hello(interaction: discord.Interaction):
+    img = discord.File(IMAGE_PATH, filename="tianyi.webp")
+
     embed = discord.Embed(
         title="Hello!",
-        description="大家好,我是虚拟歌手洛天依\n안녕하세요 저는 뤄톈이입니다",
+        description="```fix\n大家好,我是虚拟歌手洛天依\n안녕하세요 저는 뤄톈이입니다\n```",
+        color=0x66CCFF,
     )
-    await interaction.response.send_message(embed=embed)
+    embed.set_thumbnail(url="attachment://tianyi.webp")
+
+    await interaction.response.send_message(embed=embed, file=img)
 
 
 # /ping
